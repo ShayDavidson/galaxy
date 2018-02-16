@@ -55,6 +55,12 @@ html, body {
 .row input {
   width: calc(50% - var(--control-padding));
   margin-left: auto;
+  border: 0;
+  direction: rtl;
+}
+
+.row input[type=number] {
+    padding-right: 6px;
 }
 
 #scene {

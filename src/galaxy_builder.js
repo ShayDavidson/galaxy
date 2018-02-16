@@ -2,27 +2,18 @@ import { polarToCartesian, cartesianToPolar, lerp, inverseLerp } from "helpers/m
 
 export function buildGalaxy(
   rng,
-  {
-    systemsCount,
-    galaxyRoughRadius,
-    spiralArms,
-    spiralCurve,
-    armSpreadRange,
-    armPull,
-    spiralCoreDensity,
-    starTypesWeights,
-    starSizeWeights
-  }
+  { starCount, spiralArms, spiralCurve, armSpread, armPull, coreDensity, starTypesWeights, starSizeWeights }
 ) {
   const systems = [];
   const galaxy = systems;
+  const galaxyRoughRadius = 10000;
 
-  for (let i = 0; i < systemsCount; i++) {
-    let { r, t } = polarUniformLogarithmicSpiral(rng, spiralCurve, spiralCoreDensity);
+  for (let i = 0; i < starCount; i++) {
+    let { r, t } = polarUniformLogarithmicSpiral(rng, spiralCurve, coreDensity);
     t = 2 * Math.PI * (rng.randomInteger(1, spiralArms + 1) / spiralArms) + t;
     let { x, y } = polarToCartesian(r, t);
     const varPolar = polarExpCircleDistribution(rng, armPull);
-    const varCartesian = polarToCartesian(varPolar.r * armSpreadRange, varPolar.t);
+    const varCartesian = polarToCartesian(varPolar.r * armSpread, varPolar.t);
     x = (x + varCartesian.x) * galaxyRoughRadius;
     y = (y + varCartesian.y) * galaxyRoughRadius;
     const backToPolar = cartesianToPolar(x, y);
