@@ -9,6 +9,9 @@
   <body>
     <div id="container">
       <div id="control">
+        <div class="title">
+          <h4>Structure</h4>
+        </div>
         <div class="row">
           <div>seed</div>
           <input id="rngSeed" min="0" step="1" type="number" />
@@ -16,6 +19,10 @@
         <div class="row">
           <div>starCount</div>
           <input id="starCount" min="0" step="100" type="number"/>
+        </div>
+        <div class="row">
+          <div>galaxyRadius</div>
+          <input id="galaxyRadius" min="0" step="1000" type="number"/>
         </div>
         <div class="row">
           <div>spiralArms</div>
@@ -37,9 +44,19 @@
           <div>armPull</div>
           <input id="armPull" min="0" step="0.05" type="number"/>
         </div>
+        <div class="title">
+          <h4>FX</h4>
+        </div>
         <div class="row">
           <div>spaceColor</div>
           <input id="spaceColor" type="color"/>
+        </div>
+        <div class="title">
+          <h4>Camera</h4>
+        </div>
+        <div class="row">
+          <div>zoom</div>
+          <input id="zoom" min="1" step="0.05" type="number"/>
         </div>
       </div><div id="scene">
         <canvas id="main-canvas" width=1600 height=1600/>

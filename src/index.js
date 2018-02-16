@@ -1,13 +1,23 @@
+import { polarToCartesian, inverseLerp } from "helpers/math_helpers";
+import { buildGalaxy } from "galaxy_builder";
+
 let config = {
   rngSeed: 1000,
+  galaxyRadius: 10000,
   starCount: 5000,
   spiralArms: 3,
   spiralCurve: 0.3,
   coreDensity: 1.3,
   armSpread: 0.9,
   armPull: 3.75,
-  spaceColor: "#000000"
+  spaceColor: "#000000",
+  zoom: 0.75
 };
+
+let stars = [];
+
+const mainCanvas = document.getElementById("main-canvas");
+const mainCanvasContext = mainCanvas.getContext("2d");
 
 function updateInputs() {
   Object.keys(config).forEach(key => {
@@ -15,20 +25,47 @@ function updateInputs() {
   });
 }
 
+function updateStars() {
+  stars = buildGalaxy(config);
+}
+
 function render() {
-  console.log("render");
+  mainCanvasContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+  stars.forEach(star => renderStar(star, mainCanvasContext));
 }
 
 function subscribeToInputChanges() {
   Array.from(document.getElementsByTagName("input")).forEach(element => {
     element.addEventListener("change", ev => {
       config[ev.target.id] = ev.target.value;
+      updateStars();
       render();
     });
   });
 }
 
+function renderStar(star, context) {
+  let { x, y } = star.pos;
+  if (x === undefined && y === undefined) {
+    const cartesian = polarToCartesian(star.pos.r, star.pos.t);
+    x = cartesian.x;
+    y = cartesian.y;
+  }
+  const xInverseLerpValue = inverseLerp(-config.galaxyRadius / config.zoom, config.galaxyRadius / config.zoom, x);
+  const yInverseLerpValue = inverseLerp(-config.galaxyRadius / config.zoom, config.galaxyRadius / config.zoom, y);
+  x = 800 * xInverseLerpValue * window.devicePixelRatio;
+  y = 800 * yInverseLerpValue * window.devicePixelRatio;
+  // const size = STAR_SIZE_MAPPINGS[star.size] * window.devicePixelRatio;
+  // const color = STAR_COLOR_MAPPINGS[star.type];
+  const size = 1;
+  const color = "#fff";
+  context.fillStyle = color;
+  context.fillRect(x - size / 2, y - size / 2, size, size);
+}
+
 updateInputs();
+updateStars();
+render();
 subscribeToInputChanges();
 //
 //   starTypesWeights: {

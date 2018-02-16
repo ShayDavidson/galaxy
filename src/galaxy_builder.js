@@ -1,12 +1,19 @@
-import { polarToCartesian, cartesianToPolar, lerp, inverseLerp } from "helpers/math_helpers";
+import { polarToCartesian, cartesianToPolar /*lerp, inverseLerp*/ } from "helpers/math_helpers";
+import { RNG } from "helpers/random_helpers";
 
-export function buildGalaxy(
-  rng,
-  { starCount, spiralArms, spiralCurve, armSpread, armPull, coreDensity, starTypesWeights, starSizeWeights }
-) {
+export function buildGalaxy({
+  rngSeed,
+  starCount,
+  galaxyRadius,
+  spiralArms,
+  spiralCurve,
+  armSpread,
+  armPull,
+  coreDensity /*starTypesWeights, starSizeWeights*/
+}) {
+  const rng = new RNG(rngSeed);
   const systems = [];
   const galaxy = systems;
-  const galaxyRoughRadius = 10000;
 
   for (let i = 0; i < starCount; i++) {
     let { r, t } = polarUniformLogarithmicSpiral(rng, spiralCurve, coreDensity);
@@ -14,8 +21,8 @@ export function buildGalaxy(
     let { x, y } = polarToCartesian(r, t);
     const varPolar = polarExpCircleDistribution(rng, armPull);
     const varCartesian = polarToCartesian(varPolar.r * armSpread, varPolar.t);
-    x = (x + varCartesian.x) * galaxyRoughRadius;
-    y = (y + varCartesian.y) * galaxyRoughRadius;
+    x = (x + varCartesian.x) * galaxyRadius;
+    y = (y + varCartesian.y) * galaxyRadius;
     const backToPolar = cartesianToPolar(x, y);
     systems.push({
       pos: {
@@ -23,40 +30,39 @@ export function buildGalaxy(
         y,
         r: backToPolar.r,
         t: backToPolar.t
-      },
-      type: rng.randomByWeights(
-        intepolatedWeights(
-          starTypesWeights.min,
-          starTypesWeights.max,
-          starTypesWeights.ease,
-          0,
-          galaxyRoughRadius,
-          backToPolar.r
-        )
-      ),
-      size: rng.randomByWeights(
-        intepolatedWeights(
-          starSizeWeights.min,
-          starSizeWeights.max,
-          starSizeWeights.ease,
-          0,
-          galaxyRoughRadius,
-          backToPolar.r
-        )
-      ),
-      id: rng.randomString()
+      }
+      // type: rng.randomByWeights(
+      //   intepolatedWeights(
+      //     starTypesWeights.min,
+      //     starTypesWeights.max,
+      //     starTypesWeights.ease,
+      //     0,
+      //     galaxyRoughRadius,
+      //     backToPolar.r
+      //   )
+      // ),
+      // size: rng.randomByWeights(
+      //   intepolatedWeights(
+      //     starSizeWeights.min,
+      //     starSizeWeights.max,
+      //     starSizeWeights.ease,
+      //     0,
+      //     galaxyRoughRadius,
+      //     backToPolar.r
+      //   )
+      // ),
     });
   }
 
   return galaxy;
 }
-
-function intepolatedWeights(minWeights, maxWeights, ease, min, max, value) {
-  return Object.keys(minWeights).reduce((weights, key) => {
-    weights[key] = lerp(minWeights[key], maxWeights[key], ease(inverseLerp(min, max, value)));
-    return weights;
-  }, {});
-}
+//
+// function intepolatedWeights(minWeights, maxWeights, ease, min, max, value) {
+//   return Object.keys(minWeights).reduce((weights, key) => {
+//     weights[key] = lerp(minWeights[key], maxWeights[key], ease(inverseLerp(min, max, value)));
+//     return weights;
+//   }, {});
+// }
 
 function polarExpCircleDistribution(rng, exp) {
   const u = rng.random() + rng.random();
