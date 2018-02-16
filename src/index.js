@@ -9,7 +9,7 @@ let config = {
   spiralCurve: 0.3,
   coreDensity: 1.3,
   armSpread: 0.9,
-  armPull: 3.75,
+  armDensity: 3.75,
   spaceColor: "#000000",
   zoom: 0.75
 };
@@ -37,6 +37,7 @@ function render() {
 function subscribeToInputChanges() {
   Array.from(document.getElementsByTagName("input")).forEach(element => {
     element.addEventListener("change", ev => {
+      document.getElementById("scene").style.backgroundColor = config.spaceColor;
       config[ev.target.id] = ev.target.value;
       updateStars();
       render();

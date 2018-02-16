@@ -8,7 +8,7 @@ export function buildGalaxy({
   spiralArms,
   spiralCurve,
   armSpread,
-  armPull,
+  armDensity,
   coreDensity /*starTypesWeights, starSizeWeights*/
 }) {
   const rng = new RNG(rngSeed);
@@ -19,7 +19,7 @@ export function buildGalaxy({
     let { r, t } = polarUniformLogarithmicSpiral(rng, spiralCurve, coreDensity);
     t = 2 * Math.PI * (rng.randomInteger(1, spiralArms + 1) / spiralArms) + t;
     let { x, y } = polarToCartesian(r, t);
-    const varPolar = polarExpCircleDistribution(rng, armPull);
+    const varPolar = polarExpCircleDistribution(rng, armDensity);
     const varCartesian = polarToCartesian(varPolar.r * armSpread, varPolar.t);
     x = (x + varCartesian.x) * galaxyRadius;
     y = (y + varCartesian.y) * galaxyRadius;

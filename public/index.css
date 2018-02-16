@@ -75,6 +75,8 @@ html, body {
   width: 100vh;
   min-width: 100vh;
   height: 100vh;
+  border-left: 1px solid gray;
+  border-right: 1px solid gray;
 }
 
 canvas {
@@ -85,4 +87,8 @@ canvas {
 h4 {
   color: yellow;
   margin: 0;
+}
+
+.hidden {
+  display: none;
 }

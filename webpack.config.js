@@ -1,5 +1,4 @@
 const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = function(env) {
   return {
@@ -14,15 +13,7 @@ module.exports = function(env) {
         {
           test: /\.js$/,
           use: "babel-loader",
-          exclude: /(node_modules)/,
-        },
-        {
-          test: /\.json$/,
-          use: "json-loader"
-        },
-        {
-          test: /\.css$/,
-          use: "css-loader"
+          exclude: /(node_modules)/
         }
       ]
     }
