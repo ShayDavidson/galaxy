@@ -1,0 +1,70 @@
+:root {
+  --control-size: 200px;
+  --control-padding: 6px;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+  font-size: 14px;
+  font-family: "Helvetica";
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+
+#filler {
+  height: 100%;
+  background-color: #232321;
+  width: calc(100% - var(--control-size) - 100vh);
+}
+
+#control {
+  width: var(--control-size);
+  min-width: var(--control-size);
+  height: 100%;
+  background-color: #232321;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  padding: var(--control-padding);
+  border-bottom: 1px solid gray;
+  display: flex;
+}
+
+.row div {
+  color: white;
+  width: 50%;
+  line-height: 1.5em;
+  margin-right: 5px;
+}
+
+.row input {
+  width: calc(50% - var(--control-padding));
+  margin-left: auto;
+}
+
+#scene {
+  background-color: black;
+  width: 100vh;
+  min-width: 100vh;
+  height: 100vh;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+}

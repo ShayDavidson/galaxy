@@ -3,7 +3,25 @@
   <head>
     <meta charset="UTF-8">
     <title>Galaxy Builder</title>
-  <link rel="shortcut icon" href="favicon.png"></head>
-  <body><div id="container"></div>
-  <script type="text/javascript" src="main.bundle.js"></script></body>
+    <link rel="shortcut icon" href="favicon.png">
+    <link rel="stylesheet" type="text/css" href="index.css">
+  </head>
+  <body>
+    <div id="container">
+      <div id="control">
+        <div class="row">
+          <div>seed</div>
+          <input id="rngSeed" type="number" />
+        </div>
+        <div class="row">
+          <div>space</div>
+          <input id="spaceColor" type="color"/>
+        </div>
+      </div><div id="scene">
+        <canvas id="main-canvas" width=1600 height=1600/>
+      </div>
+      <div id="filler"/>
+    </div>
+    <script type="text/javascript" src="main.bundle.js"></script>
+  </body>
 </html>
