@@ -3,7 +3,6 @@ import { RNG } from "helpers/random_helpers";
 
 export function buildGalaxy({
   rngSeed,
-  elapsedTime,
   starCount,
   galaxyRadius,
   spiralArms,

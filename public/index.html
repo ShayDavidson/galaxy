@@ -51,19 +51,24 @@
           <button id="pause">❚❚</button>
         </div>
         <div class="row">
+          <div>fluctuations</div>
+          <input id="fluctuations" min="0" step="0.05" type="number" data-animation=true />
+        </div>
+        <div class="row">
+          <div>coreIsFaster</div>
+          <input id="coreIsFaster" type="checkbox" data-animation=true/>
+        </div>
+        <div class="row">
           <div>baseSlug</div>
-          <input id="baseSlug" min="1000" step="500" type="number"/>
+          <input id="baseSlug" min="1000" step="500" type="number" data-animation=true />
         </div>
         <div class="row">
           <div>slugByRadius</div>
-          <input id="slugByRadius" min="0" step="500" type="number"/>
+          <input id="slugByRadius" min="0" step="500" type="number" data-animation=true />
         </div>
         <div class="row">
-          <div>fluctuations</div>
-          <input id="fluctuations" min="0" step="0.05" type="number"/>
-        </div>
-        <div class="row hidden">
-          <input id="elapsedTime" min="0" step="0.05" type="number"/>
+          <div>slugEasing</div>
+          <select id="slugEasing" data-animation=true ></select>
         </div>
         <div class="title">
           <h4>FX</h4>

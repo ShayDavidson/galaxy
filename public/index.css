@@ -59,7 +59,7 @@ html, body {
   margin-right: 5px;
 }
 
-.row input {
+.row input, .row select {
   width: calc(50% - var(--control-padding));
   margin-left: auto;
   border: 0;
