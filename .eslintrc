@@ -1,0 +1,24 @@
+{
+  "extends": ["eslint:recommended","prettier", "plugin:import/errors", "plugin:unicorn/recommended"],
+  "plugins": ["unicorn", "prettier"],
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "amd": true
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "unicorn/filename-case": ["error", {"case": "snakeCase"}],
+    "unicorn/number-literal-case": 0,
+    "unicorn/no-fn-reference-in-iterator": 0,
+
+    "unicorn/no-abusive-eslint-disable": 0,
+    "no-console": 0,
+    "no-debugger": 0
+  },
+  "settings": {
+    "import/resolver": {
+      "babel-module": {}
+    }
+  }
+}
