@@ -3,6 +3,7 @@ import { RNG } from "helpers/random_helpers";
 
 export function buildGalaxy({
   rngSeed,
+  elapsedTime,
   starCount,
   galaxyRadius,
   spiralArms,
@@ -26,8 +27,6 @@ export function buildGalaxy({
     const backToPolar = cartesianToPolar(x, y);
     systems.push({
       pos: {
-        x,
-        y,
         r: backToPolar.r,
         t: backToPolar.t
       }

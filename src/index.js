@@ -1,4 +1,4 @@
-import { polarToCartesian, inverseLerp } from "helpers/math_helpers";
+import { polarToCartesian, inverseLerp, lerp } from "helpers/math_helpers";
 import { buildGalaxy } from "galaxy_builder";
 
 let config = {
@@ -10,14 +10,24 @@ let config = {
   coreDensity: 1.3,
   armSpread: 0.9,
   armDensity: 3.75,
+  fluctuations: 1,
+  baseSlug: 5000,
+  slugByRadius: 5000,
+  elapsedTime: 0,
   spaceColor: "#000000",
   zoom: 0.75
 };
 
+let playing = true;
+
 let stars = [];
+let lastTimestamp = Date.now();
 
 const mainCanvas = document.getElementById("main-canvas");
 const mainCanvasContext = mainCanvas.getContext("2d");
+
+document.getElementById("play").addEventListener("click", () => (playing = true));
+document.getElementById("pause").addEventListener("click", () => (playing = false));
 
 function updateInputs() {
   Object.keys(config).forEach(key => {
@@ -29,16 +39,47 @@ function updateStars() {
   stars = buildGalaxy(config);
 }
 
+function animateStars(dt) {
+  stars = stars.map(star => {
+    const r = star.pos.r;
+    const t = star.pos.t;
+    return {
+      ...star,
+      pos: {
+        r: r + lerp(-config.fluctuations, config.fluctuations, Math.random()),
+        t:
+          t +
+          dt /
+            (config.baseSlug +
+              config.slugByRadius *
+                /*easeInQuart*/ inverseLerp(0, config.galaxyRadius, Math.min(config.galaxyRadius, r)))
+      }
+    };
+  });
+}
+
 function render() {
   mainCanvasContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
   stars.forEach(star => renderStar(star, mainCanvasContext));
+}
+
+function animate() {
+  const now = Date.now();
+  const dt = now - lastTimestamp;
+  config.elapsedTime += dt;
+  if (playing) {
+    animateStars(dt);
+    render();
+  }
+  lastTimestamp = now;
+  requestAnimationFrame(animate);
 }
 
 function subscribeToInputChanges() {
   Array.from(document.getElementsByTagName("input")).forEach(element => {
     element.addEventListener("change", ev => {
       document.getElementById("scene").style.backgroundColor = config.spaceColor;
-      config[ev.target.id] = ev.target.value;
+      config[ev.target.id] = ev.target.type === "number" ? parseFloat(ev.target.value) : ev.target.value;
       updateStars();
       render();
     });
@@ -68,6 +109,8 @@ updateInputs();
 updateStars();
 render();
 subscribeToInputChanges();
+requestAnimationFrame(animate);
+
 //
 //   starTypesWeights: {
 //     ease: easeOutCubic,
