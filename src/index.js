@@ -30,6 +30,7 @@ const mainCanvasContext = mainCanvas.getContext("2d");
 
 document.getElementById("play").addEventListener("click", () => (playing = true));
 document.getElementById("pause").addEventListener("click", () => (playing = false));
+document.getElementById("reset").addEventListener("click", () => updateStars());
 
 function updateInputs() {
   Array.from(document.getElementsByTagName("select")).forEach(element => {
@@ -107,7 +108,7 @@ function subscribeToInputChanges() {
           config[ev.target.id] = ev.target.value;
         }
 
-        if (!ev.target.dataset.animation) {
+        if (ev.target.dataset.rerender) {
           updateStars();
           render();
         }
