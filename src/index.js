@@ -3,20 +3,24 @@ import { buildGalaxy } from "galaxy_builder";
 import * as easing from "helpers/easing_helpers";
 
 let config = {
+  // structure
   rngSeed: 1000,
   galaxyRadius: 10000,
-  starCount: 5000,
+  starCount: 10000,
   spiralArms: 3,
   spiralCurve: 0.3,
-  coreDensity: 1.3,
-  armSpread: 0.9,
-  armDensity: 3.75,
+  coreDensity: 3,
+  armSpread: 1,
+  armDensity: 5.5,
+  // movement
   fluctuations: 1,
   coreIsFaster: true,
   baseSlug: 5000,
   slugByRadius: 5000,
   slugEasing: "easeInQuart",
+  // fx
   spaceColor: "#000000",
+  // camera
   zoom: 0.75
 };
 
