@@ -1,16 +1,21 @@
-import { polarToCartesian, cartesianToPolar /*lerp, inverseLerp*/ } from "helpers/math_helpers";
+import { polarToCartesian, cartesianToPolar, lerp, inverseLerp } from "helpers/math_helpers";
 import { RNG } from "helpers/random_helpers";
 
-export function buildGalaxy({
-  rngSeed,
-  starCount,
-  galaxyRadius,
-  spiralArms,
-  spiralCurve,
-  armSpread,
-  armDensity,
-  coreDensity /*starTypesWeights, starSizeWeights*/
-}) {
+export function buildGalaxy(
+  {
+    rngSeed,
+    starCount,
+    galaxyRadius,
+    spiralArms,
+    spiralCurve,
+    armSpread,
+    armDensity,
+    coreDensity
+
+    // starTypesWeights,
+  },
+  starSizeWeights
+) {
   const rng = new RNG(rngSeed);
   const systems = [];
   const galaxy = systems;
@@ -28,7 +33,7 @@ export function buildGalaxy({
       pos: {
         r: backToPolar.r,
         t: backToPolar.t
-      }
+      },
       // type: rng.randomByWeights(
       //   intepolatedWeights(
       //     starTypesWeights.min,
@@ -39,28 +44,28 @@ export function buildGalaxy({
       //     backToPolar.r
       //   )
       // ),
-      // size: rng.randomByWeights(
-      //   intepolatedWeights(
-      //     starSizeWeights.min,
-      //     starSizeWeights.max,
-      //     starSizeWeights.ease,
-      //     0,
-      //     galaxyRoughRadius,
-      //     backToPolar.r
-      //   )
-      // ),
+      size: rng.randomByWeights(
+        intepolatedWeights(
+          starSizeWeights.min,
+          starSizeWeights.max,
+          starSizeWeights.ease,
+          0,
+          galaxyRadius,
+          backToPolar.r
+        )
+      )
     });
   }
 
   return galaxy;
 }
-//
-// function intepolatedWeights(minWeights, maxWeights, ease, min, max, value) {
-//   return Object.keys(minWeights).reduce((weights, key) => {
-//     weights[key] = lerp(minWeights[key], maxWeights[key], ease(inverseLerp(min, max, value)));
-//     return weights;
-//   }, {});
-// }
+
+function intepolatedWeights(minWeights, maxWeights, ease, min, max, value) {
+  return Object.keys(minWeights).reduce((weights, key) => {
+    weights[key] = lerp(minWeights[key], maxWeights[key], ease(inverseLerp(min, max, value)));
+    return weights;
+  }, {});
+}
 
 function polarExpCircleDistribution(rng, exp) {
   const u = rng.random() + rng.random();

@@ -14,77 +14,126 @@
         </div>
         <div class="row">
           <div>seed</div>
-          <input id="rngSeed" min="0" step="1" type="number" data-rerender=true/>
+          <div><input id="rngSeed" min="0" step="1" type="number" data-rerender=true/></div>
         </div>
         <div class="row">
           <div>starCount</div>
-          <input id="starCount" min="0" step="100" type="number" data-rerender=true/>
+          <div><input id="starCount" min="0" step="100" type="number" data-rerender=true/></div>
         </div>
         <div class="row hidden">
-          <input id="galaxyRadius" min="0" step="1000" type="number" data-rerender=true/>
+          <div><input id="galaxyRadius" min="0" step="1000" type="number" data-rerender=true/></div>
         </div>
         <div class="row">
           <div>spiralArms</div>
-          <input id="spiralArms" min="1" step="1" type="number" data-rerender=true/>
+          <div><input id="spiralArms" min="1" step="1" type="number" data-rerender=true/></div>
         </div>
         <div class="row">
           <div>spiralCurve</div>
-          <input id="spiralCurve" min="0" step="0.05" type="number" data-rerender=true/>
+          <div><input id="spiralCurve" min="0" step="0.05" type="number" data-rerender=true/></div>
         </div>
         <div class="row">
           <div>coreDensity</div>
-          <input id="coreDensity" min="0" step="0.05" type="number" data-rerender=true/>
+          <div><input id="coreDensity" min="0" step="0.05" type="number" data-rerender=true/></div>
         </div>
         <div class="row">
           <div>armSpread</div>
-          <input id="armSpread" min="0" step="0.05" type="number" data-rerender=true/>
+          <div><input id="armSpread" min="0" step="0.05" type="number" data-rerender=true/></div>
         </div>
         <div class="row">
           <div>armDensity</div>
-          <input id="armDensity" min="0" step="0.05" type="number" data-rerender=true/>
+          <div><input id="armDensity" min="0" step="0.05" type="number" data-rerender=true/></div>
+        </div>
+        <div class="title">
+          <h4>Star Sizes</h4>
+        </div>
+        <div class="row">
+          <div>sizeEasing</div>
+          <div><select id="sizeEasing" data-rerender=true></select></div>
+        </div>
+        <div class="row">
+          <div>hypergiant</div>
+          <div class="three">
+            <input id="hypergiantSize" min="0" step="0.25" type="number" data-rerender=true/>
+            <input id="hypergiantMin" min="0" step="1" type="number" data-rerender=true/>
+            <input id="hypergiantMax" min="0" step="1" type="number" data-rerender=true/>
+          </div>
+        </div>
+        <div class="row">
+          <div>supergiant</div>
+          <div class="three">
+            <input id="supergiantSize" min="0" step="0.25" type="number" data-rerender=true/>
+            <input id="supergiantMin" min="0" step="1" type="number" data-rerender=true/>
+            <input id="supergiantMax" min="0" step="1" type="number" data-rerender=true/>
+          </div>
+        </div>
+        <div class="row">
+          <div>giant</div>
+          <div class="three">
+            <input id="giantSize" min="0" step="0.25" type="number" data-rerender=true/>
+            <input id="giantMin" min="0" step="1" type="number" data-rerender=true/>
+            <input id="giantMax" min="0" step="1" type="number" data-rerender=true/>
+          </div>
+        </div>
+        <div class="row">
+          <div>standard</div>
+          <div class="three">
+            <input id="standardSize" min="0" step="0.25" type="number" data-rerender=true/>
+            <input id="standardMin" min="0" step="1" type="number" data-rerender=true/>
+            <input id="standardMax" min="0" step="1" type="number" data-rerender=true/>
+          </div>
+        </div>
+        <div class="row">
+          <div>dwarf</div>
+          <div class="three">
+            <input id="dwarfSize" min="0" step="0.25" type="number" data-rerender=true/>
+            <input id="dwarfMin" min="0" step="1" type="number" data-rerender=true/>
+            <input id="dwarfMax" min="0" step="1" type="number" data-rerender=true/>
+          </div>
         </div>
         <div class="title">
           <h4>Movement</h4>
         </div>
         <div class="row">
           <div>control</div>
-          <button id="reset">Reset</button>
-          <button id="play">►</button>
-          <button id="pause">❚❚</button>
+          <div>
+            <button id="reset">&nbsp;Reset&nbsp;</button>
+            <button id="play">►</button>
+            <button id="pause">❚❚</button>
+          </div>
         </div>
         <div class="row">
           <div>fluctuations</div>
-          <input id="fluctuations" min="0" step="0.05" type="number"/>
+          <div><input id="fluctuations" min="0" step="0.05" type="number"/></div>
         </div>
         <div class="row">
           <div>coreIsFaster</div>
-          <input id="coreIsFaster" type="checkbox"/>
+          <div><input id="coreIsFaster" type="checkbox"/></div>
         </div>
         <div class="row">
           <div>baseSlug</div>
-          <input id="baseSlug" min="1000" step="500" type="number"/>
+          <div><input id="baseSlug" min="1000" step="500" type="number"/></div>
         </div>
         <div class="row">
           <div>slugByRadius</div>
-          <input id="slugByRadius" min="0" step="500" type="number"/>
+          <div><input id="slugByRadius" min="0" step="500" type="number"/></div>
         </div>
         <div class="row">
           <div>slugEasing</div>
-          <select id="slugEasing"></select>
+          <div><select id="slugEasing"></select></div>
         </div>
         <div class="title">
           <h4>FX</h4>
         </div>
         <div class="row">
           <div>spaceColor</div>
-          <input id="spaceColor" type="color"/>
+          <div><input id="spaceColor" type="color"/></div>
         </div>
         <div class="title">
           <h4>Camera</h4>
         </div>
         <div class="row">
           <div>zoom</div>
-          <input id="zoom" min="1" step="0.05" type="number"/>
+          <div><input id="zoom" min="1" step="0.05" type="number"/></div>
         </div>
       </div><div id="scene">
         <canvas id="main-canvas" width=1600 height=1600/>

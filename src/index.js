@@ -2,6 +2,8 @@ import { polarToCartesian, inverseLerp, lerp } from "helpers/math_helpers";
 import { buildGalaxy } from "galaxy_builder";
 import * as easing from "helpers/easing_helpers";
 
+const starTypes = ["hypergiant", "supergiant", "giant", "standard", "dwarf"];
+
 let config = {
   // structure
   rngSeed: 1000,
@@ -12,11 +14,34 @@ let config = {
   coreDensity: 3,
   armSpread: 1,
   armDensity: 5.5,
+  // sizing
+  sizeEasing: "linear",
+
+  hypergiantSize: 4,
+  hypergiantMin: 1,
+  hypergiantMax: 1,
+
+  supergiantSize: 3.5,
+  supergiantMin: 5,
+  supergiantMax: 5,
+
+  giantSize: 2,
+  giantMin: 10,
+  giantMax: 10,
+
+  standardSize: 1.5,
+  standardMin: 100,
+  standardMax: 100,
+
+  dwarfSize: 1,
+  dwarfMin: 50,
+  dwarfMax: 50,
+
   // movement
   fluctuations: 1,
   coreIsFaster: true,
-  baseSlug: 5000,
-  slugByRadius: 5000,
+  baseSlug: 10000,
+  slugByRadius: 10000,
   slugEasing: "easeInQuart",
   // fx
   spaceColor: "#000000",
@@ -56,7 +81,21 @@ function updateInputs() {
 }
 
 function updateStars() {
-  stars = buildGalaxy(config);
+  stars = buildGalaxy(config, starSizes());
+}
+
+function starSizes() {
+  return {
+    ease: easing[config.sizeEasing],
+    min: starTypes.reduce((hash, size) => {
+      hash[size] = config[`${size}Min`];
+      return hash;
+    }, {}),
+    max: starTypes.reduce((hash, size) => {
+      hash[size] = config[`${size}Max`];
+      return hash;
+    }, {})
+  };
 }
 
 function animateStars(dt) {
@@ -131,9 +170,8 @@ function renderStar(star, context) {
   const yInverseLerpValue = inverseLerp(-config.galaxyRadius / config.zoom, config.galaxyRadius / config.zoom, y);
   x = 800 * xInverseLerpValue * window.devicePixelRatio;
   y = 800 * yInverseLerpValue * window.devicePixelRatio;
-  // const size = STAR_SIZE_MAPPINGS[star.size] * window.devicePixelRatio;
+  const size = config[`${star.size}Size`] * window.devicePixelRatio;
   // const color = STAR_COLOR_MAPPINGS[star.type];
-  const size = 1;
   const color = "#fff";
   context.fillStyle = color;
   context.fillRect(x - size / 2, y - size / 2, size, size);
