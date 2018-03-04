@@ -1,6 +1,7 @@
 import { polarToCartesian, inverseLerp } from "helpers/math_helpers";
 import { buildGalaxy } from "galaxy_builder";
 import * as easing from "helpers/easing_helpers";
+import debounce from "lodash.debounce";
 
 const starTypes = ["hypergiant", "supergiant", "giant", "standard", "dwarf"];
 const starColors = ["blue", "blueWhite", "white", "yellowWhite", "yellow", "lightOrange", "orangeRed", "red"];
@@ -9,7 +10,7 @@ let config = {
   // structure
   rngSeed: 1000,
   galaxyRadius: 10000,
-  starCount: 10000,
+  starCount: 5000,
   spiralArms: 3,
   spiralCurve: 0.4,
   coreDensity: 2.3,
@@ -87,6 +88,9 @@ let stars = [];
 const mainCanvas = document.getElementById("main-canvas");
 const mainCanvasContext = mainCanvas.getContext("2d");
 
+mainCanvas.width *= window.devicePixelRatio;
+mainCanvas.height *= window.devicePixelRatio;
+
 function updateInputs() {
   Array.from(document.getElementsByTagName("select")).forEach(element => {
     Object.keys(easing).forEach(key => {
@@ -105,6 +109,13 @@ function updateInputs() {
 function updateStars() {
   stars = buildGalaxy(config, starWeights(starTypes, "sizeEasing"), starWeights(starColors, "colorEasing"));
 }
+
+function updateStarsAndRenderNonOptimized() {
+  updateStars();
+  render();
+}
+
+let updateStarsAndRender = debounce(updateStarsAndRenderNonOptimized, 100);
 
 function starWeights(types, easingString) {
   return {
@@ -140,8 +151,7 @@ function subscribeToInputChanges() {
         }
 
         if (ev.target.dataset.rerender) {
-          updateStars();
-          render();
+          updateStarsAndRender();
         }
       });
     });
@@ -156,6 +166,7 @@ function renderStar(star, context) {
   }
   const xInverseLerpValue = inverseLerp(-config.galaxyRadius / config.zoom, config.galaxyRadius / config.zoom, x);
   const yInverseLerpValue = inverseLerp(-config.galaxyRadius / config.zoom, config.galaxyRadius / config.zoom, y);
+  console.log;
   x = 800 * xInverseLerpValue * window.devicePixelRatio;
   y = 800 * yInverseLerpValue * window.devicePixelRatio;
   const size = config[`${star.size}Size`] * window.devicePixelRatio;
