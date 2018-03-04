@@ -1,4 +1,4 @@
-import { polarToCartesian, inverseLerp } from "helpers/math_helpers";
+import { polarToCartesian, inverseLerp, rotate, rotationMatrix } from "helpers/math_helpers";
 import { buildGalaxy } from "galaxy_builder";
 import * as easing from "helpers/easing_helpers";
 import debounce from "lodash.debounce";
@@ -121,7 +121,10 @@ let config = {
   canvas3Blend: "overlay",
 
   // camera
-  zoom: 1
+  zoom: 1,
+  xRotation: 0,
+  yRotation: 0,
+  zRotation: 0
 };
 
 let stars = [];
@@ -171,7 +174,7 @@ function updateStarsAndRenderNonOptimized() {
   render();
 }
 
-let updateStarsAndRender = debounce(updateStarsAndRenderNonOptimized, 50);
+let updateStarsAndRender = debounce(updateStarsAndRenderNonOptimized, 100);
 
 function starWeights(types, easingString) {
   return {
@@ -191,7 +194,8 @@ function render() {
   document.getElementById("scene").style.backgroundColor = config.spaceColor;
   mainCanvasContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
   renderCanvas(mainCanvasContext, mainCanvas, 0);
-  stars.forEach(star => renderStar(star, mainCanvasContext));
+  let matrix = rotationMatrix(config.xRotation, config.yRotation, config.zRotation);
+  stars.forEach(star => renderStar(star, mainCanvasContext, matrix));
 
   for (let i = 1; i < canvases.length; i++) {
     let canvas = canvases[i];
@@ -230,16 +234,11 @@ function subscribeToInputChanges() {
     });
 }
 
-function renderStar(star, context) {
-  let { x, y } = star.pos;
-  if (x === undefined && y === undefined) {
-    const cartesian = polarToCartesian(star.pos.r, star.pos.t);
-    x = cartesian.x;
-    y = cartesian.y;
-  }
+function renderStar(star, context, rotationMatrix) {
+  const cartesian = polarToCartesian(star.pos.r, star.pos.t);
+  var { x, y, z } = rotate({ x: cartesian.x, y: cartesian.y, z: 0 }, rotationMatrix);
   const xInverseLerpValue = inverseLerp(-config.galaxyRadius / config.zoom, config.galaxyRadius / config.zoom, x);
   const yInverseLerpValue = inverseLerp(-config.galaxyRadius / config.zoom, config.galaxyRadius / config.zoom, y);
-  console.log;
   x = 800 * xInverseLerpValue * window.devicePixelRatio;
   y = 800 * yInverseLerpValue * window.devicePixelRatio;
   const size = config[`${star.size}Size`] * window.devicePixelRatio;

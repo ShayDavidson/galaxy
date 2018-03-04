@@ -22,7 +22,8 @@ export function buildGalaxy(
     systems.push({
       pos: {
         r: backToPolar.r,
-        t: backToPolar.t
+        t: backToPolar.t,
+        p: 0
       },
       type: rng.randomByWeights(
         intepolatedWeights(
