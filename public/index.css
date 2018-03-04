@@ -128,3 +128,11 @@ h4 {
 .hidden {
   display: none;
 }
+
+.three input {
+  vertical-align: middle;
+}
+
+.three input[type=color] {
+  margin-top: -1px;
+}

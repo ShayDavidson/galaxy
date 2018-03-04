@@ -2,19 +2,9 @@ import { polarToCartesian, cartesianToPolar, lerp, inverseLerp } from "helpers/m
 import { RNG } from "helpers/random_helpers";
 
 export function buildGalaxy(
-  {
-    rngSeed,
-    starCount,
-    galaxyRadius,
-    spiralArms,
-    spiralCurve,
-    armSpread,
-    armDensity,
-    coreDensity
-
-    // starTypesWeights,
-  },
-  starSizeWeights
+  { rngSeed, starCount, galaxyRadius, spiralArms, spiralCurve, armSpread, armDensity, coreDensity },
+  starSizeWeights,
+  starTypesWeights
 ) {
   const rng = new RNG(rngSeed);
   const systems = [];
@@ -34,16 +24,16 @@ export function buildGalaxy(
         r: backToPolar.r,
         t: backToPolar.t
       },
-      // type: rng.randomByWeights(
-      //   intepolatedWeights(
-      //     starTypesWeights.min,
-      //     starTypesWeights.max,
-      //     starTypesWeights.ease,
-      //     0,
-      //     galaxyRoughRadius,
-      //     backToPolar.r
-      //   )
-      // ),
+      type: rng.randomByWeights(
+        intepolatedWeights(
+          starTypesWeights.min,
+          starTypesWeights.max,
+          starTypesWeights.ease,
+          0,
+          galaxyRadius,
+          backToPolar.r
+        )
+      ),
       size: rng.randomByWeights(
         intepolatedWeights(
           starSizeWeights.min,

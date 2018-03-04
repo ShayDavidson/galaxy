@@ -1,8 +1,9 @@
-import { polarToCartesian, inverseLerp, lerp } from "helpers/math_helpers";
+import { polarToCartesian, inverseLerp } from "helpers/math_helpers";
 import { buildGalaxy } from "galaxy_builder";
 import * as easing from "helpers/easing_helpers";
 
 const starTypes = ["hypergiant", "supergiant", "giant", "standard", "dwarf"];
+const starColors = ["blue", "blueWhite", "white", "yellowWhite", "yellow", "lightOrange", "orangeRed", "red"];
 
 let config = {
   // structure
@@ -10,56 +11,81 @@ let config = {
   galaxyRadius: 10000,
   starCount: 10000,
   spiralArms: 3,
-  spiralCurve: 0.3,
-  coreDensity: 3,
-  armSpread: 1,
+  spiralCurve: 0.4,
+  coreDensity: 2.3,
+  armSpread: 1.3,
   armDensity: 5.5,
-  // sizing
-  sizeEasing: "linear",
 
-  hypergiantSize: 4,
-  hypergiantMin: 1,
-  hypergiantMax: 1,
+  // star sizes
+  sizeEasing: "easeInCubic",
 
-  supergiantSize: 3.5,
+  hypergiantSize: 3,
+  hypergiantMin: 5,
+  hypergiantMax: 10,
+
+  supergiantSize: 2.5,
   supergiantMin: 5,
-  supergiantMax: 5,
+  supergiantMax: 20,
 
   giantSize: 2,
   giantMin: 10,
-  giantMax: 10,
+  giantMax: 5,
 
   standardSize: 1.5,
   standardMin: 100,
-  standardMax: 100,
+  standardMax: 50,
 
   dwarfSize: 1,
-  dwarfMin: 50,
-  dwarfMax: 50,
+  dwarfMin: 10,
+  dwarfMax: 100,
 
-  // movement
-  fluctuations: 1,
-  coreIsFaster: true,
-  baseSlug: 10000,
-  slugByRadius: 10000,
-  slugEasing: "easeInQuart",
+  // star colors
+
+  colorEasing: "easeOutCubic",
+
+  blueColor: "#4444FF",
+  blueMin: 100,
+  blueMax: 500,
+
+  blueWhiteColor: "#A7D8FF",
+  blueWhiteMin: 200,
+  blueWhiteMax: 3000,
+
+  whiteColor: "#FFFFFF",
+  whiteMin: 1000,
+  whiteMax: 2000,
+
+  yellowWhiteColor: "#FFFFAA",
+  yellowWhiteMin: 500,
+  yellowWhiteMax: 120,
+
+  yellowColor: "#FFFF22",
+  yellowMin: 1000,
+  yellowMax: 10,
+
+  lightOrangeColor: "#FFC78E",
+  lightOrangeMin: 2000,
+  lightOrangeMax: 10,
+
+  orangeRedColor: "#FFA622",
+  orangeRedMin: 2000,
+  orangeRedMax: 10,
+
+  redColor: "#DD2222",
+  redMin: 3,
+  redMax: 2,
+
   // fx
   spaceColor: "#000000",
+
   // camera
-  zoom: 0.75
+  zoom: 1
 };
 
-let playing = true;
-
 let stars = [];
-let lastTimestamp = Date.now();
 
 const mainCanvas = document.getElementById("main-canvas");
 const mainCanvasContext = mainCanvas.getContext("2d");
-
-document.getElementById("play").addEventListener("click", () => (playing = true));
-document.getElementById("pause").addEventListener("click", () => (playing = false));
-document.getElementById("reset").addEventListener("click", () => updateStars());
 
 function updateInputs() {
   Array.from(document.getElementsByTagName("select")).forEach(element => {
@@ -72,69 +98,31 @@ function updateInputs() {
 
   Object.keys(config).forEach(key => {
     const element = document.getElementById(key);
-    if (element.type === "checkbox") {
-      element.checked = config[key];
-    } else {
-      element.value = config[key];
-    }
+    element.value = config[key];
   });
 }
 
 function updateStars() {
-  stars = buildGalaxy(config, starSizes());
+  stars = buildGalaxy(config, starWeights(starTypes, "sizeEasing"), starWeights(starColors, "colorEasing"));
 }
 
-function starSizes() {
+function starWeights(types, easingString) {
   return {
-    ease: easing[config.sizeEasing],
-    min: starTypes.reduce((hash, size) => {
-      hash[size] = config[`${size}Min`];
+    ease: easing[config[easingString]],
+    min: types.reduce((hash, key) => {
+      hash[key] = config[`${key}Min`];
       return hash;
     }, {}),
-    max: starTypes.reduce((hash, size) => {
-      hash[size] = config[`${size}Max`];
+    max: types.reduce((hash, key) => {
+      hash[key] = config[`${key}Max`];
       return hash;
     }, {})
   };
 }
 
-function animateStars(dt) {
-  stars = stars.map(star => {
-    const r = star.pos.r;
-    const t = star.pos.t;
-    const minInverseLerp = config.coreIsFaster ? 0 : config.galaxyRadius;
-    const maxInverseLerp = config.coreIsFaster ? config.galaxyRadius : 0;
-    return {
-      ...star,
-      pos: {
-        r: r + lerp(-config.fluctuations, config.fluctuations, Math.random()),
-        t:
-          t +
-          dt /
-            (config.baseSlug +
-              config.slugByRadius *
-                easing[config.slugEasing](
-                  inverseLerp(minInverseLerp, maxInverseLerp, Math.min(config.galaxyRadius, r))
-                ))
-      }
-    };
-  });
-}
-
 function render() {
   mainCanvasContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
   stars.forEach(star => renderStar(star, mainCanvasContext));
-}
-
-function animate() {
-  const now = Date.now();
-  const dt = now - lastTimestamp;
-  if (playing) {
-    animateStars(dt);
-    render();
-  }
-  lastTimestamp = now;
-  requestAnimationFrame(animate);
 }
 
 function subscribeToInputChanges() {
@@ -171,8 +159,7 @@ function renderStar(star, context) {
   x = 800 * xInverseLerpValue * window.devicePixelRatio;
   y = 800 * yInverseLerpValue * window.devicePixelRatio;
   const size = config[`${star.size}Size`] * window.devicePixelRatio;
-  // const color = STAR_COLOR_MAPPINGS[star.type];
-  const color = "#fff";
+  const color = config[`${star.type}Color`];
   context.fillStyle = color;
   context.fillRect(x - size / 2, y - size / 2, size, size);
 }
@@ -181,47 +168,3 @@ updateInputs();
 updateStars();
 render();
 subscribeToInputChanges();
-requestAnimationFrame(animate);
-
-//
-//   starTypesWeights: {
-//     ease: easeOutCubic,
-//     min: {
-//       blue: 100,
-//       blueWhite: 200,
-//       white: 1000,
-//       yellowWhite: 500,
-//       yellow: 1000,
-//       lightOrange: 2000,
-//       orangeRed: 2000,
-//       red: 3
-//     },
-//     max: {
-//       blue: 500,
-//       blueWhite: 3000,
-//       white: 2000,
-//       yellowWhite: 120,
-//       yellow: 10,
-//       lightOrange: 10,
-//       orangeRed: 10,
-//       red: 2
-//     }
-//   },
-//   starSizeWeights: {
-//     ease: linear,
-//     min: {
-//       hypergiant: 10,
-//       supergiant: 5,
-//       giant: 10,
-//       standard: 100,
-//       dwarf: 10
-//     },
-//     max: {
-//       hypergiant: 10,
-//       supergiant: 20,
-//       giant: 5,
-//       standard: 50,
-//       dwarf: 100
-//     }
-//   }
-// };
