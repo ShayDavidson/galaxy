@@ -3,6 +3,23 @@ import { buildGalaxy } from "galaxy_builder";
 import * as easing from "helpers/easing_helpers";
 import debounce from "lodash.debounce";
 
+const blending = [
+  "normal",
+  "multiply",
+  "screen",
+  "overlay",
+  "darken",
+  "lighten",
+  "color-dodge",
+  "color-burn",
+  "hard-light",
+  "soft-light",
+  "difference",
+  "hue",
+  "saturation",
+  "color",
+  "luminosity"
+];
 const starTypes = ["hypergiant", "supergiant", "giant", "standard", "dwarf"];
 const starColors = ["blue", "blueWhite", "white", "yellowWhite", "yellow", "lightOrange", "orangeRed", "red"];
 
@@ -10,49 +27,49 @@ let config = {
   // structure
   rngSeed: 1000,
   galaxyRadius: 10000,
-  starCount: 5000,
+  starCount: 15000,
   spiralArms: 3,
   spiralCurve: 0.4,
   coreDensity: 2.3,
   armSpread: 1.3,
-  armDensity: 5.5,
+  armDensity: 4.5,
 
   // star sizes
   sizeEasing: "easeInCubic",
 
-  hypergiantSize: 3,
+  hypergiantSize: 2.5,
   hypergiantMin: 5,
   hypergiantMax: 10,
 
-  supergiantSize: 2.5,
+  supergiantSize: 2.25,
   supergiantMin: 5,
   supergiantMax: 20,
 
-  giantSize: 2,
+  giantSize: 1.5,
   giantMin: 10,
   giantMax: 5,
 
-  standardSize: 1.5,
+  standardSize: 1,
   standardMin: 100,
   standardMax: 50,
 
-  dwarfSize: 1,
+  dwarfSize: 0.75,
   dwarfMin: 10,
   dwarfMax: 100,
 
   // star colors
 
-  colorEasing: "easeOutCubic",
+  colorEasing: "easeInCubic",
 
-  blueColor: "#4444FF",
+  blueColor: "#F4FF6D",
   blueMin: 100,
   blueMax: 500,
 
-  blueWhiteColor: "#A7D8FF",
+  blueWhiteColor: "#BEFDFF",
   blueWhiteMin: 200,
   blueWhiteMax: 3000,
 
-  whiteColor: "#FFFFFF",
+  whiteColor: "#EFF8FF",
   whiteMin: 1000,
   whiteMax: 2000,
 
@@ -60,24 +77,48 @@ let config = {
   yellowWhiteMin: 500,
   yellowWhiteMax: 120,
 
-  yellowColor: "#FFFF22",
+  yellowColor: "#FFF9F0",
   yellowMin: 1000,
   yellowMax: 10,
 
-  lightOrangeColor: "#FFC78E",
+  lightOrangeColor: "#EBFCFF",
   lightOrangeMin: 2000,
   lightOrangeMax: 10,
 
-  orangeRedColor: "#FFA622",
+  orangeRedColor: "#94FDFF",
   orangeRedMin: 2000,
   orangeRedMax: 10,
 
-  redColor: "#DD2222",
+  redColor: "#DDC91C",
   redMin: 3,
   redMax: 2,
 
   // fx
-  spaceColor: "#000000",
+  spaceColor: "#050212",
+
+  canvas0Displayed: true,
+  canvas0Alpha: 1,
+  canvas0Bright: 100,
+  canvas0Blur: 10,
+  canvas0Blend: "normal",
+
+  canvas1Displayed: true,
+  canvas1Alpha: 1,
+  canvas1Bright: 100,
+  canvas1Blur: 5,
+  canvas1Blend: "lighten",
+
+  canvas2Displayed: true,
+  canvas2Alpha: 1,
+  canvas2Bright: 100,
+  canvas2Blur: 1,
+  canvas2Blend: "normal",
+
+  canvas3Displayed: true,
+  canvas3Alpha: 1,
+  canvas3Bright: 100,
+  canvas3Blur: 20,
+  canvas3Blend: "overlay",
 
   // camera
   zoom: 1
@@ -85,15 +126,26 @@ let config = {
 
 let stars = [];
 
-const mainCanvas = document.getElementById("main-canvas");
+const mainCanvas = document.getElementById("canvas0");
 const mainCanvasContext = mainCanvas.getContext("2d");
+const canvases = Array.from(document.getElementsByTagName("canvas"));
 
-mainCanvas.width *= window.devicePixelRatio;
-mainCanvas.height *= window.devicePixelRatio;
+canvases.forEach(canvas => {
+  canvas.width *= window.devicePixelRatio;
+  canvas.height *= window.devicePixelRatio;
+});
 
 function updateInputs() {
-  Array.from(document.getElementsByTagName("select")).forEach(element => {
+  Array.from(document.getElementsByClassName("easing")).forEach(element => {
     Object.keys(easing).forEach(key => {
+      const option = document.createElement("option");
+      option.text = key;
+      element.add(option);
+    });
+  });
+
+  Array.from(document.getElementsByClassName("blending")).forEach(element => {
+    blending.forEach(key => {
       const option = document.createElement("option");
       option.text = key;
       element.add(option);
@@ -102,7 +154,11 @@ function updateInputs() {
 
   Object.keys(config).forEach(key => {
     const element = document.getElementById(key);
-    element.value = config[key];
+    if (element.type === "checkbox") {
+      element.checked = config[key];
+    } else {
+      element.value = config[key];
+    }
   });
 }
 
@@ -115,7 +171,7 @@ function updateStarsAndRenderNonOptimized() {
   render();
 }
 
-let updateStarsAndRender = debounce(updateStarsAndRenderNonOptimized, 100);
+let updateStarsAndRender = debounce(updateStarsAndRenderNonOptimized, 50);
 
 function starWeights(types, easingString) {
   return {
@@ -132,8 +188,26 @@ function starWeights(types, easingString) {
 }
 
 function render() {
+  document.getElementById("scene").style.backgroundColor = config.spaceColor;
   mainCanvasContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+  renderCanvas(mainCanvasContext, mainCanvas, 0);
   stars.forEach(star => renderStar(star, mainCanvasContext));
+
+  for (let i = 1; i < canvases.length; i++) {
+    let canvas = canvases[i];
+    let ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+    if (config[`canvas${i}Displayed`]) {
+      renderCanvas(ctx, canvas, i);
+      ctx.drawImage(mainCanvas, 0, 0);
+    }
+  }
+}
+
+function renderCanvas(ctx, canvas, i) {
+  canvas.style.mixBlendMode = config[`canvas${i}Blend`];
+  canvas.style.opacity = config[`canvas${i}Alpha`];
+  canvas.style.filter = `blur(${config[`canvas${i}Blur`]}px) brightness(${config[`canvas${i}Bright`]}%)`;
 }
 
 function subscribeToInputChanges() {
@@ -141,7 +215,6 @@ function subscribeToInputChanges() {
     .concat(Array.from(document.getElementsByTagName("select")))
     .forEach(element => {
       element.addEventListener("change", ev => {
-        document.getElementById("scene").style.backgroundColor = config.spaceColor;
         if (ev.target.type === "checkbox") {
           config[ev.target.id] = ev.target.checked;
         } else if (ev.target.type === "number") {

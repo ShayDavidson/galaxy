@@ -50,7 +50,7 @@
         </div>
         <div class="row">
           <div>sizeEasing</div>
-          <div><select id="sizeEasing" data-rerender=true></select></div>
+          <div><select id="sizeEasing" class="easing" data-rerender=true></select></div>
         </div>
         <div class="row">
           <div>hypergiant</div>
@@ -99,7 +99,7 @@
         </div>
         <div class="row">
           <div>colorEasing</div>
-          <div><select id="colorEasing" data-rerender=true></select></div>
+          <div><select id="colorEasing" class="easing" data-rerender=true></select></div>
         </div>
         <div class="row">
           <div>blue</div>
@@ -174,6 +174,57 @@
           <div>spaceColor</div>
           <div><input id="spaceColor" type="color"/></div>
         </div>
+        <div class="row bordeless">
+          <div>layer0</div>
+          <div class="five">
+            <input id="canvas0Alpha" min="0" max="1" step="0.05" type="number" data-rerender=true/>
+            <input id="canvas0Bright" min="0" max="200" step="1" type="number" data-rerender=true/>
+            <input id="canvas0Blur" min="0" max="100" step="0.5" type="number" data-rerender=true/>
+            <input id="canvas0Displayed" type="checkbox" data-rerender=true/>
+          </div>
+        </div>
+        <div class="row spread">
+          <select id="canvas0Blend" class="blending" data-rerender=true></select>
+        </div>
+
+        <div class="row bordeless">
+          <div>layer1</div>
+          <div class="five">
+            <input id="canvas1Alpha" min="0" max="1" step="0.05" type="number" data-rerender=true/>
+            <input id="canvas1Bright" min="0" max="200" step="1" type="number" data-rerender=true/>
+            <input id="canvas1Blur" min="0" max="100" step="0.5" type="number" data-rerender=true/>
+            <input id="canvas1Displayed" type="checkbox" data-rerender=true/>
+          </div>
+        </div>
+        <div class="row spread">
+          <select id="canvas1Blend" class="blending" data-rerender=true></select>
+        </div>
+
+        <div class="row bordeless">
+          <div>layer2</div>
+          <div class="five">
+            <input id="canvas2Alpha" min="0" max="1" step="0.05" type="number" data-rerender=true/>
+            <input id="canvas2Bright" min="0" max="200" step="1" type="number" data-rerender=true/>
+            <input id="canvas2Blur" min="0" max="100" step="0.5" type="number" data-rerender=true/>
+            <input id="canvas2Displayed" type="checkbox" data-rerender=true/>
+          </div>
+        </div>
+        <div class="row spread">
+          <select id="canvas2Blend" class="blending" data-rerender=true></select>
+        </div>
+
+        <div class="row bordeless">
+          <div>layer3</div>
+          <div class="five">
+            <input id="canvas3Alpha" min="0" max="1" step="0.05" type="number" data-rerender=true/>
+            <input id="canvas3Bright" min="0" max="200" step="1" type="number" data-rerender=true/>
+            <input id="canvas3Blur" min="0" max="100" step="0.5" type="number" data-rerender=true/>
+            <input id="canvas3Displayed" type="checkbox" data-rerender=true/>
+          </div>
+        </div>
+        <div class="row spread">
+          <select id="canvas3Blend" class="blending" data-rerender=true></select>
+        </div>
 
         <div class="title">
           <h4>Camera</h4>
@@ -183,7 +234,10 @@
           <div><input id="zoom" min="1" step="0.05" type="number" data-rerender=true/></div>
         </div>
       </div><div id="scene">
-        <canvas id="main-canvas" width=800 height=800/>
+        <canvas id="canvas0" width=800 height=800></canvas>
+        <canvas id="canvas1" class="displayed" width=800 height=800></canvas>
+        <canvas id="canvas2" class="displayed" width=800 height=800></canvas>
+        <canvas id="canvas3" class="displayed" width=800 height=800></canvas>
       </div>
       <div id="filler"/>
     </div>

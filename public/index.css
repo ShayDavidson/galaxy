@@ -1,6 +1,6 @@
 :root {
   --control-font-size: 12px;
-  --control-size: 200px;
+  --control-size: 300px;
   --control-padding: 0.25rem;
 }
 
@@ -45,7 +45,7 @@ html, body {
   display: flex;
 }
 
-.row {
+.row:not(.bordeless) {
   border-bottom: 1px solid gray;
 }
 
@@ -68,6 +68,10 @@ html, body {
 
 .row .three input {
   width: 30% !important;
+}
+
+.row .five input {
+  width: 23% !important;
 }
 
 .row .three input:not(:first-child) {
@@ -107,12 +111,19 @@ input[type="color"]::-webkit-color-swatch {
 }
 
 #scene {
+  position: relative;
   background-color: black;
   width: 100vh;
   min-width: 100vh;
   height: 100vh;
   border-left: 1px solid gray;
   border-right: 1px solid gray;
+}
+
+canvas.displayed {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 canvas {
@@ -129,10 +140,14 @@ h4 {
   display: none;
 }
 
-.three input {
+.three input, .five input {
   vertical-align: middle;
 }
 
 .three input[type=color] {
   margin-top: -1px;
+}
+
+.spread select {
+  width: 58% !important;
 }
